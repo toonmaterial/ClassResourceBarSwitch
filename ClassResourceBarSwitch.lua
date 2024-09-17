@@ -38,15 +38,15 @@ local function setup()
 
 	for _, d in ipairs(data) do
 		local _, _, unitFrameBar, namePlateBar, unitFrameBarFunc, namePlateBarFunc = unpack(d)
-		local k = makeDBKey(d)
+		local show = db[makeDBKey(d)].show
 
-		if db[k].show == showOptions.unitFrameBar or db[k].show == showOptions.both then
+		if show == showOptions.unitFrameBar or show == showOptions.both then
 			unitFrameBar.shouldShowBarFunc = unitFrameBarFunc
 		else
 			unitFrameBar.shouldShowBarFunc = alwaysFalse
 		end
 
-		if db[k].show == showOptions.nameplateBar or db[k].show == showOptions.both then
+		if show == showOptions.nameplateBar or show == showOptions.both then
 			namePlateBar.shouldShowBarFunc = namePlateBarFunc
 		else
 			namePlateBar.shouldShowBarFunc = alwaysFalse
