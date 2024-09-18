@@ -10,10 +10,9 @@ local data = {
 	{ 13, Enum.PowerType.Essence,       EssencePlayerFrame,      ClassNameplateBarDracthyrFrame },
 }
 
-for _, d in ipairs(data) do
-	local _, _, unitFrameBar, nameplateBar = unpack(d)
-	table.insert(d, unitFrameBar.shouldShowBarFunc)
-	table.insert(d, nameplateBar.shouldShowBarFunc)
+local function makeDBKey(d)
+	local class, powerType = d[1], d[2]
+	return class .. "-" .. powerType
 end
 
 local showOptions = {
@@ -25,41 +24,33 @@ local showOptions = {
 
 local db
 
-local function makeDBKey(d)
-	return d[1] .. "-" .. d[2]
-end
-
-local function alwaysFalse()
-	return false
-end
-
 local function setup()
 	if not db then return end
 
 	for _, d in ipairs(data) do
-		local _, _, unitFrameBar, namePlateBar, unitFrameBarFunc, namePlateBarFunc = unpack(d)
+		local _, _, unitFrameBar, namePlateBar = unpack(d)
 		local show = db[makeDBKey(d)].show
 
 		if show == showOptions.unitFrameBar or show == showOptions.both then
-			unitFrameBar.shouldShowBarFunc = unitFrameBarFunc
+			unitFrameBar.showTooltip = true
+			unitFrameBar:SetTooltip(unitFrameBar.tooltip1, unitFrameBar.tooltip2)
+			unitFrameBar:SetAlpha(1)
 		else
-			unitFrameBar.shouldShowBarFunc = alwaysFalse
+			unitFrameBar.showTooltip = false
+			unitFrameBar:SetTooltip(nil, nil)
+			unitFrameBar:SetAlpha(0)
 		end
 
 		if show == showOptions.nameplateBar or show == showOptions.both then
-			namePlateBar.shouldShowBarFunc = namePlateBarFunc
+			namePlateBar:SetAlpha(1)
 		else
-			namePlateBar.shouldShowBarFunc = alwaysFalse
+			namePlateBar:SetAlpha(0)
 		end
-
-		unitFrameBar:Setup()
-		namePlateBar:Setup()
 	end
 end
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", function(_, event, ...)
 	if event == "ADDON_LOADED" and addOnName == ... then
 		f:UnregisterEvent("ADDON_LOADED")
@@ -96,10 +87,7 @@ f:SetScript("OnEvent", function(_, event, ...)
 		end
 
 		Settings.RegisterAddOnCategory(category)
-	end
 
-	if event == "PLAYER_ENTERING_WORLD" then
-		f:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		setup()
 	end
 end)
