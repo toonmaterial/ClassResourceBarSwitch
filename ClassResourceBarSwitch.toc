@@ -1,7 +1,7 @@
-## Interface: 110002
+## Interface: 110002, 110005
 ## Title: Class Resource Bar Switch
 ## Author: toonmaterial
-## Version: 1.0.1
+## Version: 1.1.0
 ## SavedVariables: ClassResourceBarSwitchDB
 
 ClassResourceBarSwitch.lua
