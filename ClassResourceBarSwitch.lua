@@ -3,6 +3,7 @@ local addOnName = ...
 local data = {
 	{ 2,  Enum.PowerType.HolyPower,     PaladinPowerBarFrame,    ClassNameplateBarPaladinFrame },
 	{ 4,  Enum.PowerType.ComboPoints,   RogueComboPointBarFrame, ClassNameplateBarRogueFrame },
+	{ 6,  Enum.PowerType.Runes,         RuneFrame,               DeathKnightResourceOverlayFrame },
 	{ 8,  Enum.PowerType.ArcaneCharges, MageArcaneChargesFrame,  ClassNameplateBarMageFrame },
 	{ 9,  Enum.PowerType.SoulShards,    WarlockPowerFrame,       ClassNameplateBarWarlockFrame },
 	{ 10, Enum.PowerType.Chi,           MonkHarmonyBarFrame,     ClassNameplateBarWindwalkerMonkFrame },
@@ -11,24 +12,32 @@ local data = {
 }
 
 local function makeDBKey(d)
-	local class, powerType = d[1], d[2]
+	local class, powerType = unpack(d)
 	return class .. "-" .. powerType
 end
 
 local showOptions = {
 	unitFrameBar = 1,
 	nameplateBar = 2,
-	both = 3,
-	none = 4,
+	both         = 3,
+	none         = 4,
 }
 
 local db
+
+local function prepare()
+	for _, f in ipairs { RuneFrame, DeathKnightResourceOverlayFrame } do
+		f.SetTooltip = ClassPowerBar.SetTooltip
+		f.tooltip1 = f.tooltipTitle
+		f.tooltip2 = f.tooltip
+	end
+end
 
 local function setup()
 	if not db then return end
 
 	for _, d in ipairs(data) do
-		local _, _, unitFrameBar, namePlateBar = unpack(d)
+		local _, _, unitFrameBar, nameplateBar = unpack(d)
 		local show = db[makeDBKey(d)].show
 
 		if show == showOptions.unitFrameBar or show == showOptions.both then
@@ -42,9 +51,9 @@ local function setup()
 		end
 
 		if show == showOptions.nameplateBar or show == showOptions.both then
-			namePlateBar:SetAlpha(1)
+			nameplateBar:SetAlpha(1)
 		else
-			namePlateBar:SetAlpha(0)
+			nameplateBar:SetAlpha(0)
 		end
 	end
 end
@@ -57,6 +66,8 @@ f:SetScript("OnEvent", function(_, event, ...)
 
 		ClassResourceBarSwitchDB = ClassResourceBarSwitchDB or {}
 		db = ClassResourceBarSwitchDB
+
+		prepare()
 
 		local category = Settings.RegisterVerticalLayoutCategory(addOnName)
 
