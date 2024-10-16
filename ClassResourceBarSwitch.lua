@@ -87,10 +87,10 @@ f:SetScript("OnEvent", function(_, event, ...)
 
 			local function getOptions()
 				local options = Settings.CreateControlTextContainer()
-				options:Add(showOptions.unitFrameBar, "Unit Frame Bar")
-				options:Add(showOptions.nameplateBar, "Nameplate Bar")
-				options:Add(showOptions.both, "Both")
-				options:Add(showOptions.none, "None")
+				options:Add(showOptions.both, STATUS_TEXT_BOTH)
+				options:Add(showOptions.unitFrameBar, UNITFRAME_LABEL)
+				options:Add(showOptions.nameplateBar, NAMEPLATES_LABEL)
+				options:Add(showOptions.none, NONE)
 				return options:GetData()
 			end
 
